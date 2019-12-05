@@ -1,0 +1,14 @@
+{
+  "name": "notes-app-pwa",
+  "version": "1.0.0",
+  "description": "PWA notes app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "ErdVuca",
+  "license": "ISC",
+  "dependencies": {
+    "normalize.css": "^8.0.1"
+  }
+}
