@@ -30,7 +30,6 @@ function deleteNote(id) {
     note.remove();
 };
 
-
 document.addEventListener('DOMContentLoaded', () => {
     signInBtn.addEventListener('click', signIn);
     signOutBtn.addEventListener('click', signOut);

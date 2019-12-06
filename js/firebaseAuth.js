@@ -39,28 +39,17 @@ function signOut(e) {
 }
 
 
+const localNotes = JSON.parse(localStorage.getItem('notes')) || [];
 firebase.auth().onAuthStateChanged(function(user) {
+  //get any notes from localStorage
   if (user) {
     // User is signed in.
     const displayName = user.displayName;
     const email = user.email;
     const emailVerified = user.emailVerified;
-
-    db.enablePersistence()
-      .catch(function(err) {
-          if (err.code == 'failed-precondition') {
-              // Multiple tabs open, persistence can only be enabled
-              // in one tab at a a time.
-              // ...
-              console.log('failed');
-          } else if (err.code == 'unimplemented') {
-              // The current browser does not support all of the
-              // features required to enable persistence
-              // ...
-              console.log('persistance isnt available');
-          }
-    });
     const dbRef = db.collection('users').doc(user.uid).collection('notes');
+    //add localStorage notes to the database
+    dbRef.add(localNotes);
 
     dbRef.onSnapshot(snapshot => {
         console.log(snapshot);
@@ -113,6 +102,32 @@ firebase.auth().onAuthStateChanged(function(user) {
     signInBtn.textContent = 'Sign In';
     signInBtn.style.pointerEvents = 'auto';
     console.log('not logged in');
+    localNotes.map(note => renderNewNote(note));
+
+    //add notes to localStorage when user is not logged in
+    form.addEventListener('submit', e => {
+        e.preventDefault();
+        const notes = [];
+        const note = {
+            title: form.title.value,
+            note: form.note.value,
+        }
+        notes.push(note);
+        localStorage.setItem('notes', JSON.stringify(notes));
+        renderNewNote(note);
+    });
+    //delete note from localStorage
+    noteContainer.addEventListener('click', function(e) {
+      const noteTitle = this.querySelector('.note-title');
+      const parent = noteTitle.parentNode;
+      if (e.target.tagName === 'BUTTON') {
+        const updatedNotes = JSON.parse(localStorage.getItem('notes')).filter(note => {
+          return note.title !== noteTitle.textContent
+        });
+        localStorage.setItem('notes', JSON.stringify(updatedNotes));
+        parent.remove();
+      }
+    });
   }
 }, function(error) {
   console.log(error);
