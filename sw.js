@@ -1,8 +1,9 @@
-const staticCache = 'site-static-v21';
+const staticCache = 'site-static-v3';
 const assets = [
     '/',
     'index.html',
     'js/app.js',
+    'js/db.js',
     'js/firebaseAuth.js',
     'css/main.css',
     'css/normalize.css'

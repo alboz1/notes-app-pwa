@@ -32,54 +32,46 @@ function signOut(e) {
   firebase.auth().signOut().then(function() {
     // Sign-out successful.
     console.log('User signed out');
+    localNotes.splice(0, localNotes.length);
   }).catch(function(error) {
     // An error happened.
     console.log(error);
   });
 }
 
-
-const localNotes = JSON.parse(localStorage.getItem('notes')) || [];
 firebase.auth().onAuthStateChanged(function(user) {
   //get any notes from localStorage
   if (user) {
     // User is signed in.
     const displayName = user.displayName;
-    const email = user.email;
-    const emailVerified = user.emailVerified;
-    const dbRef = db.collection('users').doc(user.uid).collection('notes');
     //add localStorage notes to the database
-    dbRef.add(localNotes);
+    const dbRef = createDb(user.uid);
+    if(localNotes.length) {
+      localNotes.map(localNote => {
+        const note = {
+          title: localNote.title,
+          note: localNote.note
+        };
+        dbRef.add(note);
+      })
+    }
+    localStorage.removeItem('notes');
 
     dbRef.onSnapshot(snapshot => {
-        console.log(snapshot);
-        snapshot.docChanges().forEach(change => {
-            console.log(change.doc.data());
+      snapshot.docChanges().forEach(change => {
+        if (change.type === 'added') {
+          //add note
+          renderNewNote(change.doc.data(), change.doc.id)
+        }
 
-            if (change.type === 'added') {
-              //add note
-                renderNewNote(change.doc.data(), change.doc.id)
-            }
-
-            if (change.type === 'removed') {
-                //remove note
-              deleteNote(change.doc.id);
-            }
-        });
+        if (change.type === 'removed') {
+          //remove note
+          deleteNote(change.doc.id);
+        }
+      });
     });
 
-    form.addEventListener('submit', e => {
-        e.preventDefault();
-    
-        const note = {
-            title: form.title.value,
-            note: form.note.value
-        };
-    
-        dbRef.add(note);
-    
-        form.reset();
-    });
+    form.addEventListener('submit', e => storeNote('database', e, dbRef));
 
     //delete note from database
     noteContainer.addEventListener('click', e => {
@@ -88,44 +80,33 @@ firebase.auth().onAuthStateChanged(function(user) {
         dbRef.doc(id).delete();
       }
     });
-    console.log(displayName, email, emailVerified);
-    console.log(user.uid);
+
     signOutBtn.textContent = 'Sign Out';
     signInBtn.textContent = `Signed In (${displayName})`;
     signInBtn.style.pointerEvents = 'none';
-    // user.getIdToken().then(function(accessToken) {
-    // });
   } else {
     // User is signed out.
     document.querySelector('.container').innerHTML = '';
     signOutBtn.style.display = 'none';
     signInBtn.textContent = 'Sign In';
     signInBtn.style.pointerEvents = 'auto';
-    console.log('not logged in');
-    localNotes.map(note => renderNewNote(note));
+
+    if (localNotes.length) {
+      localNotes.map(note => renderNewNote(note, note.id));
+    }
 
     //add notes to localStorage when user is not logged in
-    form.addEventListener('submit', e => {
-        e.preventDefault();
-        const notes = [];
-        const note = {
-            title: form.title.value,
-            note: form.note.value,
-        }
-        notes.push(note);
-        localStorage.setItem('notes', JSON.stringify(notes));
-        renderNewNote(note);
-    });
+    form.addEventListener('submit', e => storeNote('localStorage', e));
+
     //delete note from localStorage
-    noteContainer.addEventListener('click', function(e) {
-      const noteTitle = this.querySelector('.note-title');
-      const parent = noteTitle.parentNode;
+    noteContainer.addEventListener('click', e => {
       if (e.target.tagName === 'BUTTON') {
+        const id = Number(e.target.getAttribute('data-id'));
         const updatedNotes = JSON.parse(localStorage.getItem('notes')).filter(note => {
-          return note.title !== noteTitle.textContent
+          return id !== note.id
         });
         localStorage.setItem('notes', JSON.stringify(updatedNotes));
-        parent.remove();
+        deleteNote(id);
       }
     });
   }
