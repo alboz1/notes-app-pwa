@@ -1,16 +1,31 @@
+@import url('https://fonts.googleapis.com/css?family=Overpass:400,700&display=swap');
+
 :root {
     --main-color: #5a45b0;
+    --text-color: #0f0f0f;
 }
+
+body {
+    font-family: 'Overpass', sans-serif;
+}
+
 .site-header {
-    background: var(--main-color);
+    /* background: var(--main-color); */
+    padding: 30px;
 }
 .site-header h1 {
-    color: white;
+    color: var(--text-color);
 }
 .site-header a {
-    color: white;
+    color: var(--text-color);
     margin-left: 20px;
+    transition: color ease-in-out 0.15s;
 }
+
+.site-header a:hover {
+    color: var(--main-color);
+}
+
 .header-wrapper {
     max-width: 900px;
     display: flex;
@@ -22,25 +37,67 @@
 main .container {
     max-width: 900px;
     margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-wrap: wrap;
 }
 
 .container .note-container {
-    margin: 0 auto;
-    width: 300px;
+    flex: 1 1 350px;
+    margin: 10px;
+    padding: 10px 15px;
+    /* width: 350px; */
     background: #f6f7fb;
-    position: relative;
+    border-radius: 10px;
+    box-sizing: border-box;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
 }
 
-.btn {
+.note-container .note-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.note-container p {
+    font-size: 15px;
+}
+
+.note-header .delete-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.delete-btn:hover #delete > path {
+    fill: #f53131;
+}
+
+.note-header #delete > path {
+    fill: #b4b4c0;
+    transition: fill ease-in-out 0.15s;
+}
+
+#open-sidebar {
+    background: var(--main-color);
+    border: none;
+    border-radius: 100%;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+    color: #ffff;
+    cursor: pointer;
+    width: 50px;
+    height: 50px;
+    font-size: 29px;
     position: fixed;
     right: 30px;
     bottom: 30px;
+    transition: all ease-in-out 0.15s;
 }
 
-.delete-btn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
+#open-sidebar:hover {
+    background: #f6f7fb;
+    color: var(--main-color);
 }
 
 .sidebar {
