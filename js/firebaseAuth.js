@@ -100,7 +100,7 @@ firebase.auth().onAuthStateChanged(function(user) {
 
     //delete note from localStorage
     noteContainer.addEventListener('click', e => {
-      if (e.target.tagName === 'BUTTON') {
+      if (e.target.tagName === 'BUTTON' || e.target.tagName === 'path' || e.target.tagName === 'svg') {
         const id = Number(e.target.getAttribute('data-id'));
         const updatedNotes = JSON.parse(localStorage.getItem('notes')).filter(note => {
           return id !== note.id
