@@ -39,13 +39,21 @@ function signOut(e) {
   });
 }
 
+const user = firebase.auth().currentUser;
+//add notes to localStorage when user is not logged in
+if (!user) {
+  form.addEventListener('submit', e => storeNote('localStorage', e));
+}
+
 firebase.auth().onAuthStateChanged(function(user) {
-  //get any notes from localStorage
   if (user) {
     // User is signed in.
+    console.log(user);
     const displayName = user.displayName;
+    const profilePicture = user.photoURL;
     //add localStorage notes to the database
     const dbRef = createDb(user.uid);
+
     if(localNotes.length) {
       localNotes.map(localNote => {
         const note = {
@@ -82,7 +90,9 @@ firebase.auth().onAuthStateChanged(function(user) {
     });
 
     signOutBtn.textContent = 'Sign Out';
-    signInBtn.textContent = `Signed In (${displayName})`;
+    imgEl.style.display = 'inline';
+    imgEl.src = profilePicture;
+    signInBtn.textContent = displayName;
     signInBtn.style.pointerEvents = 'none';
   } else {
     // User is signed out.
@@ -90,13 +100,11 @@ firebase.auth().onAuthStateChanged(function(user) {
     signOutBtn.style.display = 'none';
     signInBtn.textContent = 'Sign In';
     signInBtn.style.pointerEvents = 'auto';
+    imgEl.style.display = 'none';
 
     if (localNotes.length) {
       localNotes.map(note => renderNewNote(note, note.id));
     }
-
-    //add notes to localStorage when user is not logged in
-    form.addEventListener('submit', e => storeNote('localStorage', e));
 
     //delete note from localStorage
     noteContainer.addEventListener('click', e => {

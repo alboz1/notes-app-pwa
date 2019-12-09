@@ -9,6 +9,7 @@ if('serviceWorker' in navigator) {
 
 const signInBtn = document.querySelector('#sign-in');
 const signOutBtn = document.querySelector('#sign-out');
+const imgEl = document.querySelector('#profile-picture');
 const form = document.querySelector('.new-note-form');
 const addNewNoteBtn = document.querySelector('#open-sidebar');
 const noteContainer = document.querySelector('.container');
