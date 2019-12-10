@@ -4,6 +4,7 @@ function signIn(e) {
   provider.setCustomParameters({
     prompt: 'select_account'
   });
+
   firebase.auth().signInWithRedirect(provider).then(function(result) {
     // This gives you a Google Access Token. You can use it to access the Google API.
     console.log(result);
@@ -42,13 +43,13 @@ function signOut(e) {
 const user = firebase.auth().currentUser;
 //add notes to localStorage when user is not logged in
 if (!user) {
+  document.querySelector('.loading-screen').style.display = 'block';
   form.addEventListener('submit', e => storeNote('localStorage', e));
 }
 
 firebase.auth().onAuthStateChanged(function(user) {
   if (user) {
     // User is signed in.
-    console.log(user);
     const displayName = user.displayName;
     const profilePicture = user.photoURL;
     //add localStorage notes to the database
@@ -88,18 +89,22 @@ firebase.auth().onAuthStateChanged(function(user) {
         dbRef.doc(id).delete();
       }
     });
-
+    
+    document.querySelector('.loading-screen').style.display = 'none';
     signOutBtn.textContent = 'Sign Out';
     imgEl.style.display = 'inline';
     imgEl.src = profilePicture;
     signInBtn.textContent = displayName;
     signInBtn.style.pointerEvents = 'none';
+    signInBtn.style.textDecoration = 'none';
   } else {
     // User is signed out.
+    document.querySelector('.loading-screen').style.display = 'none';
     document.querySelector('.container').innerHTML = '';
     signOutBtn.style.display = 'none';
     signInBtn.textContent = 'Sign In';
     signInBtn.style.pointerEvents = 'auto';
+    signInBtn.style.textDecoration = 'underline';
     imgEl.style.display = 'none';
 
     if (localNotes.length) {

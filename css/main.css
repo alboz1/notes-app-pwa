@@ -7,7 +7,7 @@
 
 body {
     font-family: 'Overpass', sans-serif;
-    background-image: url('../img/background-mask.svg');
+    background: #f6f7fb url('../img/background-mask.svg');
     background-repeat: no-repeat;
     background-size: contain;
     height: 100vh;
@@ -37,7 +37,7 @@ body {
     display: none;
     border-radius: 50%;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
-    margin: 0 15px;
+    margin: 0 10px 0 15px;
 }
 
 .site-header a:hover {
@@ -65,7 +65,7 @@ main .container {
     flex: 0 1 330px;
     margin: 10px;
     padding: 10px 15px;
-    background: #f6f7fb;
+    background: #ffff;
     border-radius: 10px;
     box-sizing: border-box;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.11);
@@ -131,7 +131,7 @@ main .container {
     background: #fcfcfc;
     box-shadow: 0 0 30px rgba(0, 0, 0, 0.15);
     padding: 20px;
-    width: 300px;
+    width: 350px;
     position: fixed;
     top: 0;
     left: 0;
@@ -147,13 +147,13 @@ main .container {
 
 @media (max-width: 450px) {
     .sidebar {
-        width: auto;
+        width: 250px;
     }
     .container .note-container {
        flex-grow: 1; 
     }
     body {
-        background-size: 150%;
+        background-size: 200%;
     }
 }
 
@@ -226,4 +226,25 @@ main .container {
 
 .sidebar .new-note-form input[type="submit"]:hover {
     background:  rgba(90, 69, 176, 0.89)
+}
+
+.loading-screen {
+    background: #f6f7fb;
+    opacity: 0.95;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: none;
+}
+
+.loading-screen img {
+    width: 110px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    bottom: 0;
+    right: 0;
+    transform: translate(-50%, -50%);
 }
