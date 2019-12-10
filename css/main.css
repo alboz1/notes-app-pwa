@@ -1,13 +1,26 @@
 @import url('https://fonts.googleapis.com/css?family=Overpass:400,700&display=swap');
 
 :root {
-    --main-color: #5a45b0;
+    --background-color: #f6f7fb;
+    --note-color: #ffffff;
     --text-color: #121212;
+    --main-color: #5a45b0;
+    --secondary-color: #fcfcfc;
+    --secondary-text-color: #ffffff;
+}
+
+[data-theme="dark"] {
+    --background-color: #181824;
+    --note-color: #242635;
+    --text-color: #e2e9f3;
+    --main-color: #282147;
+    --secondary-color: #181824;
+    --secondary-text-color: #e2e9f3;
 }
 
 body {
     font-family: 'Overpass', sans-serif;
-    background: #f6f7fb url('../img/background-mask.svg');
+    background: var(--background-color) url('../img/background-mask.svg');
     background-repeat: no-repeat;
     background-size: contain;
     height: 100vh;
@@ -24,10 +37,10 @@ body {
 }
 
 .site-header h1 {
-    color: #ffff;
+    color: var(--secondary-text-color);
 }
 .site-header a {
-    color: #ffff;
+    color: var(--secondary-text-color);
     transition: all ease-in-out 0.15s;
 }
 
@@ -65,7 +78,7 @@ main .container {
     flex: 0 1 330px;
     margin: 10px;
     padding: 10px 15px;
-    background: #ffff;
+    background: var(--note-color);
     border-radius: 10px;
     box-sizing: border-box;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.11);
@@ -100,9 +113,9 @@ main .container {
 #open-sidebar {
     background: var(--main-color);
     border: none;
-    border-radius: 100%;
+    border-radius: 50%;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
-    color: #ffff;
+    color: var(--secondary-text-color);
     cursor: pointer;
     width: 50px;
     height: 50px;
@@ -116,7 +129,7 @@ main .container {
 }
 
 #open-sidebar path {
-    fill: #ffff;
+    fill: var(--secondary-text-color);
 }
 
 #open-sidebar svg {
@@ -128,7 +141,7 @@ main .container {
 }
 
 .sidebar {
-    background: #fcfcfc;
+    background: var(--secondary-color);
     box-shadow: 0 0 30px rgba(0, 0, 0, 0.15);
     padding: 20px;
     width: 350px;
@@ -141,8 +154,49 @@ main .container {
     z-index: 3;
 }
 
+.sidebar-header {
+    padding: 30px 0;
+    border-bottom: 1px solid #d7d9df;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sidebar-header label {
+    position: relative;
+    cursor: pointer;
+}
+
+.sidebar-header .icon {
+    position: absolute;
+    top: -5px;
+    left: -10px;
+}
+
+.sidebar-header .icon path {
+    fill: var(--text-color);
+}
+
+.sidebar-header .icon.active {
+    opacity: 0;
+}
+
+.sidebar-header input {
+    opacity: 0;
+}
+
+.sidebar-header input:checked + .icon.dark {
+    opacity: 0;
+}
+
+.sidebar-header input:checked + .icon.light {
+    opacity: 1;
+}
+
 .sidebar h6 {
     color: var(--text-color);
+    font-size: 20px;
+    margin: 0;
 }
 
 @media (max-width: 450px) {
@@ -177,13 +231,6 @@ main .container {
     opacity: 1;
 }
 
-.sidebar h6 {
-    font-size: 20px;
-    margin: 0;
-    padding: 30px 0;
-    border-bottom: 1px solid #f6f7fb;
-}
-
 .open {
     transform: translateX(0);
 }
@@ -203,6 +250,7 @@ main .container {
     background: none;
     border: none;
     outline: none;
+    color: var(--text-color);
 }
 
 .sidebar .new-note-form textarea {
@@ -229,7 +277,7 @@ main .container {
 }
 
 .loading-screen {
-    background: #f6f7fb;
+    background: var(--background-color);
     opacity: 0.95;
     position: fixed;
     top: 0;
