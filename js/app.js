@@ -34,10 +34,13 @@ function renderNewNote(noteInfo, id) {
 //get localNotes
 const localNotes = JSON.parse(localStorage.getItem('notes')) || [];
 let id = localNotes.length === 0 ? 0 : localNotes[localNotes.length - 1].id;
-function storeNote(storage, e, db) {
+let storageRef = '';
+let database = undefined;
+
+function storeNote(e) {
     e.preventDefault();
     
-    if (storage === 'localStorage') {
+    if (storageRef === 'localStorage') {
         id++;
         const note = {
             title: form.title.value,
@@ -49,12 +52,12 @@ function storeNote(storage, e, db) {
         renderNewNote(note, id);
         console.log(id);
     }
-    if (storage === 'database') {
+    if (storageRef === 'database') {
         const note = {
             title: form.title.value,
             note: form.note.value
         };
-        db.add(note);
+        database.add(note);
     }
     form.reset();
 }
@@ -64,6 +67,7 @@ function deleteNote(id) {
     note.remove();
 };
 
+//switch app theme
 const switchToggle = document.querySelector('#theme-switch');
 
 function switchTheme(e) {
@@ -77,6 +81,7 @@ function switchTheme(e) {
     }    
 }
 
+//save theme option to the localStorage
 const currentTheme = localStorage.getItem('theme') ? localStorage.getItem('theme') : null;
 
 if (currentTheme) {
@@ -108,4 +113,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     switchToggle.addEventListener('change', switchTheme);
+    form.addEventListener('submit', e => storeNote(e));
 });
+

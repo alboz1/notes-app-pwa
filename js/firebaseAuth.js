@@ -41,10 +41,8 @@ function signOut(e) {
 }
 
 const user = firebase.auth().currentUser;
-//add notes to localStorage when user is not logged in
-if (!user) {
-  document.querySelector('.loading-screen').style.display = 'block';
-  form.addEventListener('submit', e => storeNote('localStorage', e));
+if (user === null) {
+    document.querySelector('.loading-screen').style.display = 'block';
 }
 
 firebase.auth().onAuthStateChanged(function(user) {
@@ -52,9 +50,12 @@ firebase.auth().onAuthStateChanged(function(user) {
     // User is signed in.
     const displayName = user.displayName;
     const profilePicture = user.photoURL;
-    //add localStorage notes to the database
     const dbRef = createDb(user.uid);
+    
+    database = dbRef;
+    storageRef = 'database';
 
+    //add localStorage notes to the database
     if(localNotes.length) {
       localNotes.map(localNote => {
         const note = {
@@ -64,8 +65,9 @@ firebase.auth().onAuthStateChanged(function(user) {
         dbRef.add(note);
       })
     }
-    localStorage.removeItem('notes');
 
+    localStorage.removeItem('notes');
+    
     dbRef.onSnapshot(snapshot => {
       snapshot.docChanges().forEach(change => {
         if (change.type === 'added') {
@@ -80,11 +82,9 @@ firebase.auth().onAuthStateChanged(function(user) {
       });
     });
 
-    form.addEventListener('submit', e => storeNote('database', e, dbRef));
-
     //delete note from database
     noteContainer.addEventListener('click', e => {
-      if (e.target.tagName === 'BUTTON'){
+      if (e.target.tagName === 'BUTTON' || e.target.tagName === 'path' || e.target.tagName === 'svg'){
         const id = e.target.getAttribute('data-id');
         dbRef.doc(id).delete();
       }
@@ -106,11 +106,13 @@ firebase.auth().onAuthStateChanged(function(user) {
     signInBtn.style.pointerEvents = 'auto';
     signInBtn.style.textDecoration = 'underline';
     imgEl.style.display = 'none';
-
+    
     if (localNotes.length) {
       localNotes.map(note => renderNewNote(note, note.id));
     }
 
+    storageRef = 'localStorage';
+    
     //delete note from localStorage
     noteContainer.addEventListener('click', e => {
       if (e.target.tagName === 'BUTTON' || e.target.tagName === 'path' || e.target.tagName === 'svg') {
