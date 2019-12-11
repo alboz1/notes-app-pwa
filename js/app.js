@@ -27,7 +27,7 @@ function renderNewNote(noteInfo, id) {
             <p class="note-content">${noteInfo.note}</p>
         </div>
     `
-    
+
     noteContainer.innerHTML += note;
 }
 
@@ -50,7 +50,6 @@ function storeNote(e) {
         localNotes.push(note);
         localStorage.setItem('notes', JSON.stringify(localNotes));
         renderNewNote(note, id);
-        console.log(id);
     }
     if (storageRef === 'database') {
         const note = {
