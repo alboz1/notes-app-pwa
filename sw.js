@@ -1,4 +1,4 @@
-const staticCache = 'site-static-v23';
+const staticCache = 'site-static-v28';
 const assets = [
     '/',
     'index.html',

@@ -6,7 +6,7 @@
     --text-color: #121212;
     --main-color: #5a45b0;
     --secondary-color: #fcfcfc;
-    --secondary-text-color: #ffffff;
+    --hover-color: #5a45b0;
 }
 
 [data-theme="dark"] {
@@ -15,15 +15,12 @@
     --text-color: #e2e9f3;
     --main-color: #282147;
     --secondary-color: #181824;
-    --secondary-text-color: #e2e9f3;
+    --hover-color: #ffffff;
 }
 
 body {
     font-family: 'Overpass', sans-serif;
-    background: var(--background-color) url('../img/background-mask.svg');
-    background-repeat: no-repeat;
-    background-size: contain;
-    height: 100vh;
+    background: var(--background-color);
 }
 
 .site-header {
@@ -37,11 +34,15 @@ body {
 }
 
 .site-header h1 {
-    color: var(--secondary-text-color);
+    color: var(--text-color);
 }
 .site-header a {
-    color: var(--secondary-text-color);
+    color: var(--text-color);
     transition: all ease-in-out 0.15s;
+}
+
+.site-header a:hover {
+    color: var(--hover-color);
 }
 
 .site-header img {
@@ -51,10 +52,6 @@ body {
     border-radius: 50%;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
     margin: 0 10px 0 15px;
-}
-
-.site-header a:hover {
-    text-decoration: none;
 }
 
 .header-wrapper {
@@ -115,7 +112,7 @@ main .container {
     border: none;
     border-radius: 50%;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
-    color: var(--secondary-text-color);
+    color: var(--text-color);
     cursor: pointer;
     width: 50px;
     height: 50px;
@@ -129,7 +126,7 @@ main .container {
 }
 
 #open-sidebar path {
-    fill: var(--secondary-text-color);
+    fill: #e2e9f3;
 }
 
 #open-sidebar svg {
@@ -208,6 +205,9 @@ main .container {
     }
     body {
         background-size: 200%;
+    }
+    .site-header .btn-wrapper {
+        font-size: 15px;
     }
 }
 

@@ -102,7 +102,7 @@ firebase.auth().onAuthStateChanged(function(user) {
     document.querySelector('.loading-screen').style.display = 'none';
     document.querySelector('.container').innerHTML = '';
     signOutBtn.style.display = 'none';
-    signInBtn.textContent = 'Sign In';
+    signInBtn.textContent = 'Sign In with Google';
     signInBtn.style.pointerEvents = 'auto';
     signInBtn.style.textDecoration = 'underline';
     imgEl.style.display = 'none';
