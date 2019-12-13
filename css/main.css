@@ -7,6 +7,7 @@
     --main-color: #5a45b0;
     --secondary-color: #fcfcfc;
     --hover-color: #5a45b0;
+    --note-card-hover-color: rgba(255, 255, 255, 0.55);
 }
 
 [data-theme="dark"] {
@@ -16,6 +17,7 @@
     --main-color: #282147;
     --secondary-color: #181824;
     --hover-color: #ffffff;
+    --note-card-hover-color:rgba(36, 38, 53, 0.75);
 }
 
 body {
@@ -80,6 +82,12 @@ main .container {
     box-sizing: border-box;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.11);
     color: var(--text-color);
+    cursor: pointer;
+    transition: all ease-in-out 0.15s;
+}
+
+.container .note-container:hover {
+    background: var(--note-card-hover-color);
 }
 
 .note-container .note-header {
@@ -92,7 +100,7 @@ main .container {
     font-size: 15px;
 }
 
-.note-header .delete-btn {
+.note-header .delete-btn, .close-editor {
     background: none;
     border: none;
     cursor: pointer;
@@ -195,21 +203,6 @@ main .container {
     margin: 0;
 }
 
-@media (max-width: 450px) {
-    .sidebar {
-        width: 250px;
-    }
-    .container .note-container {
-       flex-grow: 1; 
-    }
-    body {
-        background-size: 200%;
-    }
-    .site-header .btn-wrapper {
-        font-size: 15px;
-    }
-}
-
 .sidebar-mask {
     width: 100%;
     height: 100%;
@@ -243,7 +236,7 @@ main .container {
     flex-direction: column;
 }
 
-.sidebar .new-note-form input[type="text"], textarea {
+.sidebar .new-note-form input[type="text"], .sidebar .new-note-form textarea, .edit-note-container .wrapper input, textarea {
     margin-top: 20px;
     padding: 20px 10px;
     background: none;
@@ -252,10 +245,9 @@ main .container {
     color: var(--text-color);
 }
 
-.sidebar .new-note-form textarea {
+textarea {
     resize: none;
     height: 200px;
-    overflow-y: inherit;
 }
 
 .sidebar .new-note-form input[type="submit"] {
@@ -294,4 +286,88 @@ main .container {
     bottom: 0;
     right: 0;
     transform: translate(-50%, -50%);
+}
+
+.edit-note-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 450px;
+    height: 400px;
+    padding: 20px;
+    box-sizing: border-box;
+    background: var(--note-color);
+    border-radius: 15px;
+    transform: translate(-50%, -50%);
+    z-index: 5;
+    opacity: 0;
+    display: none;
+}
+
+.edit-note-container.open-edit-note {
+    display: block;
+    opacity: 1;
+}
+
+.edit-note-container .wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.edit-note-container .wrapper .close-editor {
+    align-self: flex-start;
+}
+
+.edit-note-container .wrapper #edit-title {
+    font-size: 20px;
+}
+
+.close-editor #back-arrow {
+    fill: var(--text-color);
+}
+
+.error-pop-up {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    width: 200px;
+    transform: translateX(-50%);
+    background: var(--note-color);
+    border-radius: 5px;
+    color: var(--text-color);
+    padding: 5px 10px;
+    text-align: center;
+    display: none;
+}
+
+@keyframes slidein {
+    from {
+      opacity: 0;
+      transform: translate(-50%, -40%);
+    }
+  
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+}
+
+@media (max-width: 450px) {
+    .sidebar {
+        width: 250px;
+    }
+    .container .note-container {
+       flex-grow: 1; 
+    }
+    body {
+        background-size: 200%;
+    }
+    .site-header .btn-wrapper {
+        font-size: 15px;
+    }
+    .edit-note-container {
+        width: 100%;
+        height: 100vh;
+        border-radius: 0;
+    }
 }

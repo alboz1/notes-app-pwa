@@ -32,7 +32,7 @@ function renderNewNote(noteInfo, id) {
 }
 
 //get localNotes
-const localNotes = JSON.parse(localStorage.getItem('notes')) || [];
+let localNotes = JSON.parse(localStorage.getItem('notes')) || [];
 let id = localNotes.length === 0 ? 0 : localNotes[localNotes.length - 1].id;
 let storageRef = '';
 let database = undefined;
@@ -91,27 +91,57 @@ if (currentTheme) {
     }
 }
 
+function saveNote(title, note, id) {
+    const titleEl = document.querySelector(`.note-container[data-id="${id}"] .note-title`);
+    const noteEl = document.querySelector(`.note-container[data-id="${id}"] .note-content`);
+
+    localNotes.map(localNote => {
+        if (id === localNote.id) {
+            localNote.title = title;
+            localNote.note = note;
+            titleEl.textContent = title;
+            noteEl.textContent = note;
+        }
+    });
+    localStorage.setItem('notes', JSON.stringify(localNotes));
+}
+
 const sidebarMask = document.querySelector('.sidebar-mask');
 const sidebar = document.querySelector('.sidebar');
+const editor = document.querySelector('.edit-note-container');
+let idRef = undefined;
 
 document.addEventListener('DOMContentLoaded', () => {
     signInBtn.addEventListener('click', signIn);
     signOutBtn.addEventListener('click', signOut);
 
     addNewNoteBtn.addEventListener('click', () => {
+        editor.classList.remove('open-edit-note');
         form.title.select();
         sidebar.classList.toggle('open');
         addNewNoteBtn.classList.toggle('rotate');
-        sidebarMask.classList.toggle('sidebar-mask-open');
+        if (!sidebarMask.classList.contains('sidebar-mask-open') || !addNewNoteBtn.classList.contains('rotate')) {
+            sidebarMask.classList.toggle('sidebar-mask-open');
+        }
     });
 
     sidebarMask.addEventListener('click', function() {
         this.classList.remove('sidebar-mask-open');
         sidebar.classList.remove('open');
         addNewNoteBtn.classList.remove('rotate');
+        editor.classList.remove('open-edit-note');
     });
 
     switchToggle.addEventListener('change', switchTheme);
     form.addEventListener('submit', e => storeNote(e));
-});
 
+    //save the edited note
+    const closeEditorBtn = document.querySelector('.close-editor');
+    closeEditorBtn.addEventListener('click', () => {
+        sidebarMask.classList.remove('sidebar-mask-open');
+        editor.classList.remove('open-edit-note');
+        saveNote(document.querySelector('#edit-title').value, document.querySelector('#edit-note').value, idRef);
+        document.querySelector('#edit-title').value = '';
+        document.querySelector('#edit-note').textContent = '';
+    });
+});

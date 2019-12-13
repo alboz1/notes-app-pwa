@@ -19,8 +19,11 @@ function signIn(e) {
     const errorCode = error.code;
     const errorMessage = error.message;
     console.log(errorCode, errorMessage);
-    const node = document.createElement('p');
-    document.querySelector('.container').appendChild(node).textContent = 'No Internet';
+    document.querySelector('.error-pop-up').style.display = 'block';
+    setTimeout(() => {
+      document.querySelector('.error-pop-up').style.display = 'none';
+    }, 2000);
+    clearTimeout();
     // The email of the user's account used.
     const email = error.email;
     // The firebase.auth.AuthCredential type that was used.
@@ -113,15 +116,28 @@ firebase.auth().onAuthStateChanged(function(user) {
 
     storageRef = 'localStorage';
     
-    //delete note from localStorage
     noteContainer.addEventListener('click', e => {
+      //delete note from localStorage
       if (e.target.tagName === 'BUTTON' || e.target.tagName === 'path' || e.target.tagName === 'svg') {
         const id = Number(e.target.getAttribute('data-id'));
-        const updatedNotes = JSON.parse(localStorage.getItem('notes')).filter(note => {
-          return id !== note.id
-        });
-        localStorage.setItem('notes', JSON.stringify(updatedNotes));
+        localNotes = localNotes.filter(note => id !== note.id);
+        localStorage.setItem('notes', JSON.stringify(localNotes));
         deleteNote(id);
+      }
+      //open editor for the note use clicked
+      if (e.target.className === 'note-container' || e.target.tagName === 'HEADER' || e.target.tagName === 'P') {
+        const id = Number(e.target.getAttribute('data-id') || e.target.parentNode.getAttribute('data-id'));
+        idRef = id;
+        localNotes.map(note => {
+          if (note.id === id) {
+            document.querySelector('#edit-title').value = note.title;
+            document.querySelector('#edit-note').value = note.note;
+          }
+        });
+
+        editor.style.animation = '0.3s 1 normal cubic-bezier(0,0,.05,.93) slidein';
+        editor.classList.add('open-edit-note');
+        sidebarMask.classList.add('sidebar-mask-open');
       }
     });
   }
