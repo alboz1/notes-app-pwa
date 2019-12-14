@@ -73,9 +73,14 @@ firebase.auth().onAuthStateChanged(function(user) {
     
     dbRef.onSnapshot(snapshot => {
       snapshot.docChanges().forEach(change => {
+        console.log(change);
         if (change.type === 'added') {
           //add note
-          renderNewNote(change.doc.data(), change.doc.id)
+          renderNewNote(change.doc.data(), change.doc.id);
+        }
+
+        if (change.type === 'modified') {
+          renderUpdatedNote(change.doc.data().title, change.doc.data().note, change.doc.id);
         }
 
         if (change.type === 'removed') {
@@ -85,14 +90,6 @@ firebase.auth().onAuthStateChanged(function(user) {
       });
     });
 
-    //delete note from database
-    noteContainer.addEventListener('click', e => {
-      if (e.target.tagName === 'BUTTON' || e.target.tagName === 'path' || e.target.tagName === 'svg'){
-        const id = e.target.getAttribute('data-id');
-        dbRef.doc(id).delete();
-      }
-    });
-    
     document.querySelector('.loading-screen').style.display = 'none';
     signOutBtn.textContent = 'Sign Out';
     imgEl.style.display = 'inline';
@@ -115,31 +112,6 @@ firebase.auth().onAuthStateChanged(function(user) {
     }
 
     storageRef = 'localStorage';
-    
-    noteContainer.addEventListener('click', e => {
-      //delete note from localStorage
-      if (e.target.tagName === 'BUTTON' || e.target.tagName === 'path' || e.target.tagName === 'svg') {
-        const id = Number(e.target.getAttribute('data-id'));
-        localNotes = localNotes.filter(note => id !== note.id);
-        localStorage.setItem('notes', JSON.stringify(localNotes));
-        deleteNote(id);
-      }
-      //open editor for the note use clicked
-      if (e.target.className === 'note-container' || e.target.tagName === 'HEADER' || e.target.tagName === 'P') {
-        const id = Number(e.target.getAttribute('data-id') || e.target.parentNode.getAttribute('data-id'));
-        idRef = id;
-        localNotes.map(note => {
-          if (note.id === id) {
-            document.querySelector('#edit-title').value = note.title;
-            document.querySelector('#edit-note').value = note.note;
-          }
-        });
-
-        editor.style.animation = '0.3s 1 normal cubic-bezier(0,0,.05,.93) slidein';
-        editor.classList.add('open-edit-note');
-        sidebarMask.classList.add('sidebar-mask-open');
-      }
-    });
   }
 }, function(error) {
   console.log(error);

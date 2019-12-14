@@ -1,4 +1,4 @@
-const staticCache = 'site-static-v39';
+const staticCache = 'site-static-v43';
 const assets = [
     '/',
     'index.html',
@@ -6,7 +6,8 @@ const assets = [
     'js/db.js',
     'js/firebaseAuth.js',
     'css/main.css',
-    'css/normalize.css'
+    'css/normalize.css',
+    'img/Spinner.svg'
 ];
 //install service worker
 self.addEventListener('install', evt => {

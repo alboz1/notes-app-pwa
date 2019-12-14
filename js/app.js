@@ -34,6 +34,7 @@ function renderNewNote(noteInfo, id) {
 //get localNotes
 let localNotes = JSON.parse(localStorage.getItem('notes')) || [];
 let id = localNotes.length === 0 ? 0 : localNotes[localNotes.length - 1].id;
+
 let storageRef = '';
 let database = undefined;
 
@@ -92,18 +93,32 @@ if (currentTheme) {
 }
 
 function saveNote(title, note, id) {
+    if (storageRef === 'localStorage') {
+        localNotes.map(localNote => {
+            if (Number(id) === localNote.id) {
+                localNote.title = title;
+                localNote.note = note;
+
+                renderUpdatedNote(title, note, id);
+            }
+        });
+        localStorage.setItem('notes', JSON.stringify(localNotes));
+    }
+
+    if (storageRef === 'database') {
+        database.doc(id).update({
+            title: title,
+            note: note
+        });
+    }
+}
+
+function renderUpdatedNote(title, note, id) {
     const titleEl = document.querySelector(`.note-container[data-id="${id}"] .note-title`);
     const noteEl = document.querySelector(`.note-container[data-id="${id}"] .note-content`);
 
-    localNotes.map(localNote => {
-        if (id === localNote.id) {
-            localNote.title = title;
-            localNote.note = note;
-            titleEl.textContent = title;
-            noteEl.textContent = note;
-        }
-    });
-    localStorage.setItem('notes', JSON.stringify(localNotes));
+    titleEl.textContent = title;
+    noteEl.textContent = note;
 }
 
 const sidebarMask = document.querySelector('.sidebar-mask');
@@ -129,6 +144,10 @@ document.addEventListener('DOMContentLoaded', () => {
         this.classList.remove('sidebar-mask-open');
         sidebar.classList.remove('open');
         addNewNoteBtn.classList.remove('rotate');
+        if (editor.classList.contains('open-edit-note')) {
+            saveNote(document.querySelector('#edit-title').value, document.querySelector('#edit-note').value, idRef);
+        }
+        document.body.style.overflowY = 'auto';
         editor.classList.remove('open-edit-note');
     });
 
@@ -138,10 +157,43 @@ document.addEventListener('DOMContentLoaded', () => {
     //save the edited note
     const closeEditorBtn = document.querySelector('.close-editor');
     closeEditorBtn.addEventListener('click', () => {
+        document.body.style.overflowY = 'auto';
         sidebarMask.classList.remove('sidebar-mask-open');
         editor.classList.remove('open-edit-note');
         saveNote(document.querySelector('#edit-title').value, document.querySelector('#edit-note').value, idRef);
         document.querySelector('#edit-title').value = '';
         document.querySelector('#edit-note').textContent = '';
+    });
+
+
+    noteContainer.addEventListener('click', e => {
+        //delete note from localStorage or firestore database
+        if (e.target.tagName === 'BUTTON' || e.target.tagName === 'path' || e.target.tagName === 'svg') {
+            const id = e.target.getAttribute('data-id');
+
+            if (storageRef === 'localStorage') {
+                localNotes = localNotes.filter(note => Number(id) !== note.id);
+                localStorage.setItem('notes', JSON.stringify(localNotes));
+                deleteNote(id);
+            }
+
+            if (storageRef === 'database') {
+                database.doc(id).delete();
+            }
+        }
+        //open editor for the note user clicked
+        if (e.target.className === 'note-container' || e.target.tagName === 'HEADER' || e.target.tagName === 'P') {
+            editor.style.animation = '0.3s 1 normal cubic-bezier(0,0,.05,.93) slidein';
+            document.body.style.overflowY = 'hidden';
+            editor.classList.add('open-edit-note');
+            sidebarMask.classList.add('sidebar-mask-open');
+            const id = e.target.getAttribute('data-id') || e.target.parentNode.getAttribute('data-id');
+            idRef = id;
+    
+            const titleEl = document.querySelector(`.note-container[data-id="${id}"] .note-title`);
+            const noteEl = document.querySelector(`.note-container[data-id="${id}"] .note-content`);
+            document.querySelector('#edit-title').value = titleEl.textContent;
+            document.querySelector('#edit-note').value = noteEl.textContent;
+        }
     });
 });

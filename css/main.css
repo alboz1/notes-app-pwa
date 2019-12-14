@@ -370,4 +370,7 @@ textarea {
         height: 100vh;
         border-radius: 0;
     }
+    .edit-note-container .wrapper {
+        padding-top: 20px;
+    }
 }
