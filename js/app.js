@@ -121,6 +121,10 @@ function renderUpdatedNote(title, note, id) {
     noteEl.textContent = note;
 }
 
+function closeEditor() {
+    editor.classList.remove('open-edit-note');
+}
+
 const sidebarMask = document.querySelector('.sidebar-mask');
 const sidebar = document.querySelector('.sidebar');
 const editor = document.querySelector('.edit-note-container');
@@ -148,7 +152,8 @@ document.addEventListener('DOMContentLoaded', () => {
             saveNote(document.querySelector('#edit-title').value, document.querySelector('#edit-note').value, idRef);
         }
         document.body.style.overflowY = 'auto';
-        editor.classList.remove('open-edit-note');
+        editor.style.animation = '0.25s 1 normal cubic-bezier(0,0,.05,.93) slideout';
+        editor.addEventListener('animationend', closeEditor);
     });
 
     switchToggle.addEventListener('change', switchTheme);
@@ -158,8 +163,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeEditorBtn = document.querySelector('.close-editor');
     closeEditorBtn.addEventListener('click', () => {
         document.body.style.overflowY = 'auto';
+        editor.style.animation = '0.25s 1 normal cubic-bezier(0,0,.05,.93) slideout';
+        editor.addEventListener('animationend', closeEditor);
         sidebarMask.classList.remove('sidebar-mask-open');
-        editor.classList.remove('open-edit-note');
         saveNote(document.querySelector('#edit-title').value, document.querySelector('#edit-note').value, idRef);
         document.querySelector('#edit-title').value = '';
         document.querySelector('#edit-note').textContent = '';
@@ -183,13 +189,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         //open editor for the note user clicked
         if (e.target.className === 'note-container' || e.target.tagName === 'HEADER' || e.target.tagName === 'P') {
-            editor.style.animation = '0.3s 1 normal cubic-bezier(0,0,.05,.93) slidein';
             document.body.style.overflowY = 'hidden';
+            editor.removeEventListener('animationend', closeEditor);
+            editor.style.animation = '0.25s 1 normal cubic-bezier(0,0,.05,.93) slidein';
             editor.classList.add('open-edit-note');
             sidebarMask.classList.add('sidebar-mask-open');
             const id = e.target.getAttribute('data-id') || e.target.parentNode.getAttribute('data-id');
             idRef = id;
-    
+            
             const titleEl = document.querySelector(`.note-container[data-id="${id}"] .note-title`);
             const noteEl = document.querySelector(`.note-container[data-id="${id}"] .note-content`);
             document.querySelector('#edit-title').value = titleEl.textContent;

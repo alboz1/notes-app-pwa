@@ -51,7 +51,6 @@ if (user === null) {
 firebase.auth().onAuthStateChanged(function(user) {
   if (user) {
     // User is signed in.
-    const displayName = user.displayName;
     const profilePicture = user.photoURL;
     const dbRef = createDb(user.uid);
     
@@ -73,7 +72,6 @@ firebase.auth().onAuthStateChanged(function(user) {
     
     dbRef.onSnapshot(snapshot => {
       snapshot.docChanges().forEach(change => {
-        console.log(change);
         if (change.type === 'added') {
           //add note
           renderNewNote(change.doc.data(), change.doc.id);
@@ -94,8 +92,7 @@ firebase.auth().onAuthStateChanged(function(user) {
     signOutBtn.textContent = 'Sign Out';
     imgEl.style.display = 'inline';
     imgEl.src = profilePicture;
-    signInBtn.textContent = displayName;
-    signInBtn.style.pointerEvents = 'none';
+    signInBtn.textContent = '';
     signInBtn.style.textDecoration = 'none';
   } else {
     // User is signed out.
@@ -103,7 +100,6 @@ firebase.auth().onAuthStateChanged(function(user) {
     document.querySelector('.container').innerHTML = '';
     signOutBtn.style.display = 'none';
     signInBtn.textContent = 'Sign In with Google';
-    signInBtn.style.pointerEvents = 'auto';
     signInBtn.style.textDecoration = 'underline';
     imgEl.style.display = 'none';
     
