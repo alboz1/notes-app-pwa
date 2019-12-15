@@ -7,11 +7,6 @@ if('serviceWorker' in navigator) {
     });
 }
 
-//Helper function
-function insertAfter(newNode, referenceNode) {
-    referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
-}
-
 const signInBtn = document.querySelector('#sign-in');
 const signOutBtn = document.querySelector('#sign-out');
 const imgEl = document.querySelector('#profile-picture');
