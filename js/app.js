@@ -7,6 +7,11 @@ if('serviceWorker' in navigator) {
     });
 }
 
+//Helper function
+function insertAfter(newNode, referenceNode) {
+    referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
+}
+
 const signInBtn = document.querySelector('#sign-in');
 const signOutBtn = document.querySelector('#sign-out');
 const imgEl = document.querySelector('#profile-picture');
@@ -15,20 +20,24 @@ const addNewNoteBtn = document.querySelector('#open-sidebar');
 const noteContainer = document.querySelector('.container');
 
 function renderNewNote(noteInfo, id) {
-    const note = `
-        <div class="note-container" data-id="${id}">
-            <header class="note-header">
-                <h4 class="note-title">${noteInfo.title}</h4>
-                <button class="delete-btn" data-id="${id}"><svg version="1.1" data-id="${id}" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-                width="16px" height="16px" viewBox="0 0 459 459" style="enable-background:new 0 0 459 459;" xml:space="preserve"><g><g id="delete">
-                   <path data-id="${id}" d="M76.5,408c0,28.05,22.95,51,51,51h204c28.05,0,51-22.95,51-51V102h-306V408z M408,25.5h-89.25L293.25,0h-127.5l-25.5,25.5
-                       H51v51h357V25.5z"/></g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g></svg></button>
-            </header>
-            <p class="note-content">${noteInfo.note}</p>
-        </div>
-    `
+    const newNote = document.createElement('div');
+    newNote.classList.add('note-container');
+    newNote.setAttribute('data-id', id);
+    const firstChild = noteContainer.firstChild;
 
-    noteContainer.innerHTML += note;
+    const note = `
+        <header class="note-header">
+            <h4 class="note-title">${noteInfo.title}</h4>
+            <button class="delete-btn" data-id="${id}"><svg version="1.1" data-id="${id}" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+            width="16px" height="16px" viewBox="0 0 459 459" style="enable-background:new 0 0 459 459;" xml:space="preserve"><g><g id="delete">
+                <path data-id="${id}" d="M76.5,408c0,28.05,22.95,51,51,51h204c28.05,0,51-22.95,51-51V102h-306V408z M408,25.5h-89.25L293.25,0h-127.5l-25.5,25.5
+                    H51v51h357V25.5z"/></g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g></svg></button>
+        </header>
+        <p class="note-content">${noteInfo.note}</p>
+    `
+    newNote.innerHTML = note;
+
+    noteContainer.insertBefore(newNote, firstChild);
 }
 
 //get localNotes
@@ -40,12 +49,13 @@ let database = undefined;
 
 function storeNote(e) {
     e.preventDefault();
-    
+    const date = new Date();
     if (storageRef === 'localStorage') {
         id++;
         const note = {
             title: form.title.value,
             note: form.note.value,
+            date: date,
             id: id
         }
         localNotes.push(note);
@@ -55,7 +65,8 @@ function storeNote(e) {
     if (storageRef === 'database') {
         const note = {
             title: form.title.value,
-            note: form.note.value
+            note: form.note.value,
+            date: date
         };
         database.add(note);
     }

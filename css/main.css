@@ -122,13 +122,16 @@ main .container {
     cursor: pointer;
     width: 50px;
     height: 50px;
-    font-size: 29px;
     position: fixed;
     right: 30px;
     bottom: 30px;
     transition: all ease-in-out 0.15s;
     z-index: 2;
     outline: none;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 #open-sidebar path {
@@ -313,8 +316,7 @@ textarea {
 
 .edit-note-container .wrapper .close-editor {
     align-self: flex-start;
-    padding: 0;
-    margin-bottom: 15px;
+    padding: 10px 10px 10px 0;
 }
 
 .edit-note-container .wrapper #edit-title {
@@ -384,6 +386,9 @@ textarea {
         border-radius: 0;
     }
     .edit-note-container .wrapper {
-        padding-top: 20px;
+        padding-top: 7px;
+    }
+    .site-header img {
+        width: 30px;
     }
 }

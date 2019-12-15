@@ -53,24 +53,24 @@ firebase.auth().onAuthStateChanged(function(user) {
     // User is signed in.
     const profilePicture = user.photoURL;
     const dbRef = createDb(user.uid);
-    
+
     database = dbRef;
     storageRef = 'database';
-
+    
     //add localStorage notes to the database
     if(localNotes.length) {
       localNotes.map(localNote => {
         const note = {
           title: localNote.title,
-          note: localNote.note
+          note: localNote.note,
+          date: localNote.date
         };
         dbRef.add(note);
       })
     }
-
     localStorage.removeItem('notes');
-    
-    dbRef.onSnapshot(snapshot => {
+
+    dbRef.orderBy('date', 'asc').onSnapshot(snapshot => {
       snapshot.docChanges().forEach(change => {
         if (change.type === 'added') {
           //add note
