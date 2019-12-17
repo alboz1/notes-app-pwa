@@ -6,14 +6,8 @@ function signIn(e) {
   });
 
   firebase.auth().signInWithRedirect(provider).then(function(result) {
-    // This gives you a Google Access Token. You can use it to access the Google API.
-    console.log(result);
-    const token = result.credential.accessToken;
-    console.log(token);
-    // The signed-in user info.
     const user = result.user;
     console.log(user);
-    // ...
   }).catch(function(error) {
     // Handle Errors here.
     const errorCode = error.code;
@@ -24,10 +18,6 @@ function signIn(e) {
       document.querySelector('.error-pop-up').style.display = 'none';
     }, 2000);
     clearTimeout();
-    // The email of the user's account used.
-    const email = error.email;
-    // The firebase.auth.AuthCredential type that was used.
-    const credential = error.credential;
   });
 }
 
@@ -57,7 +47,7 @@ firebase.auth().onAuthStateChanged(function(user) {
     database = dbRef;
     storageRef = 'database';
     userId = user.uid;
-
+    
     //add localStorage notes to the database
     if(localNotes.length) {
       localNotes.map(localNote => {
@@ -110,7 +100,7 @@ firebase.auth().onAuthStateChanged(function(user) {
     signInBtn.textContent = 'Sign In with Google';
     signInBtn.style.textDecoration = 'underline';
     imgEl.style.display = 'none';
-    
+
     if (localNotes.length) {
       localNotes.map(note => renderNewNote(note, note.id));
     }

@@ -37,6 +37,7 @@ function renderNewNote(noteInfo, id) {
 
 //get localNotes
 let localNotes = JSON.parse(localStorage.getItem('notes')) || [];
+//generate simple id for notes that are stored in local storage
 let id = localNotes.length === 0 ? 0 : localNotes[localNotes.length - 1].id;
 
 let storageRef = '';
