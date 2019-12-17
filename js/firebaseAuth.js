@@ -56,7 +56,8 @@ firebase.auth().onAuthStateChanged(function(user) {
 
     database = dbRef;
     storageRef = 'database';
-    
+    userId = user.uid;
+
     //add localStorage notes to the database
     if(localNotes.length) {
       localNotes.map(localNote => {
@@ -65,20 +66,27 @@ firebase.auth().onAuthStateChanged(function(user) {
           note: localNote.note,
           date: localNote.date
         };
-        dbRef.add(note);
+
+        const encryptedNote = encryptData(note);
+        dbRef.add(encryptedNote);
       })
     }
     localStorage.removeItem('notes');
 
     dbRef.orderBy('date', 'asc').onSnapshot(snapshot => {
       snapshot.docChanges().forEach(change => {
+        const decryptedNote = {
+          title: CryptoJS.AES.decrypt(change.doc.data().title, userId).toString(CryptoJS.enc.Utf8),
+          note: CryptoJS.AES.decrypt(change.doc.data().note, userId).toString(CryptoJS.enc.Utf8)
+        }
+
         if (change.type === 'added') {
           //add note
-          renderNewNote(change.doc.data(), change.doc.id);
+          renderNewNote(decryptedNote, change.doc.id);
         }
 
         if (change.type === 'modified') {
-          renderUpdatedNote(change.doc.data().title, change.doc.data().note, change.doc.id);
+          renderUpdatedNote(decryptedNote.title, decryptedNote.note, change.doc.id);
         }
 
         if (change.type === 'removed') {

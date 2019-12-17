@@ -41,6 +41,7 @@ let id = localNotes.length === 0 ? 0 : localNotes[localNotes.length - 1].id;
 
 let storageRef = '';
 let database = undefined;
+let userId = undefined;
 
 function storeNote(e) {
     e.preventDefault();
@@ -63,9 +64,19 @@ function storeNote(e) {
             note: form.note.value,
             date: date
         };
-        database.add(note);
+        const encryptedNote = encryptData(note);
+        database.add(encryptedNote);
     }
     form.reset();
+}
+
+// encrypt note data before storing them to the database
+function encryptData(note) {
+    return {
+        title: CryptoJS.AES.encrypt(note.title, userId).toString(),
+        note: CryptoJS.AES.encrypt(note.note, userId).toString(),
+        date: note.date
+    }
 }
 
 function deleteNote(id) {
@@ -113,8 +124,8 @@ function saveNote(title, note, id) {
 
     if (storageRef === 'database') {
         database.doc(id).update({
-            title: title,
-            note: note
+            title: CryptoJS.AES.encrypt(title, userId).toString(),
+            note: CryptoJS.AES.encrypt(note, userId).toString()
         });
     }
 }
@@ -194,13 +205,13 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
         //open editor for the note user clicked
-        if (e.target.className === 'note-container' || e.target.tagName === 'HEADER' || e.target.tagName === 'P') {
+        if (e.target.className === 'note-container' || e.target.tagName === 'HEADER' || e.target.tagName === 'H4' || e.target.tagName === 'P') {
             document.body.style.overflowY = 'hidden';
             editor.removeEventListener('animationend', closeEditor);
             editor.style.animation = '0.25s 1 normal cubic-bezier(0,0,.05,.93) slidein';
             editor.classList.add('open-edit-note');
             sidebarMask.classList.add('sidebar-mask-open');
-            const id = e.target.getAttribute('data-id') || e.target.parentNode.getAttribute('data-id');
+            const id = e.target.getAttribute('data-id') || e.target.parentNode.getAttribute('data-id') || e.target.parentNode.parentNode.getAttribute('data-id');
             idRef = id;
             
             const titleEl = document.querySelector(`.note-container[data-id="${id}"] .note-title`);

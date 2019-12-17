@@ -83,6 +83,7 @@ main .container {
     color: var(--text-color);
     cursor: pointer;
     transition: all ease-in-out 0.15s;
+    word-break: break-all;
 }
 
 .container .note-container:hover {
@@ -374,9 +375,6 @@ textarea {
     .container .note-container {
        flex-grow: 1; 
     }
-    body {
-        background-size: 200%;
-    }
     .site-header .btn-wrapper {
         font-size: 15px;
     }
@@ -387,6 +385,10 @@ textarea {
     }
     .edit-note-container .wrapper {
         padding-top: 7px;
+        height: 100%;
+    }
+    .edit-note-container .wrapper #edit-note {
+        flex: 1;
     }
     .site-header img {
         width: 30px;
