@@ -51,10 +51,11 @@ firebase.auth().onAuthStateChanged(function(user) {
     //add localStorage notes to the database
     if(localNotes.length) {
       localNotes.map(localNote => {
+        const date = new firebase.firestore.Timestamp(localNote.date.seconds, localNote.date.nanoseconds);
         const note = {
           title: localNote.title,
           note: localNote.note,
-          date: localNote.date
+          date: date
         };
 
         const encryptedNote = encryptData(note);
@@ -94,6 +95,7 @@ firebase.auth().onAuthStateChanged(function(user) {
     signInBtn.style.textDecoration = 'none';
   } else {
     // User is signed out.
+    userId = undefined;
     document.querySelector('.loading-screen').style.display = 'none';
     document.querySelector('.container').innerHTML = '';
     signOutBtn.style.display = 'none';

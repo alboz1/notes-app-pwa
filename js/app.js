@@ -52,7 +52,7 @@ function storeNote(e) {
         const note = {
             title: form.title.value,
             note: form.note.value,
-            date: date,
+            date: firebase.firestore.Timestamp.fromDate(date),
             id: id
         }
         localNotes.push(note);
